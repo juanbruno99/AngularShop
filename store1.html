@@ -3,54 +3,103 @@
 <html ng-app="store">
 	<head>
 		<link rel="stylesheet" type="text/css" href="bootstrap.min.css" />
+		<script type="text/javascript" src="angular.min.js"> </script>
+		<!-- This is our module linked to the html -->
+		<script type="text/javascript" src="app.js"> </script>
 	</head>
 	<body>
 	<!--Controller here attached as well -->
 		<div ng-controller="StoreController as store">
-			<!--Directive for looping in the model received from Controller-->
-			<div ng-repeat="product in store.products | orderBy: 'price'">
-				<!--directive that hides the html element based on any of the model's property we choose -->
-				<div ng-hide="product.soldOut"> 
-					<h1> {{product.name}} </h1>
+		<header>
+		  <h1 class="text-center">Crafted Gems</h1>
+		  <h2 class="text-center">store</h2>
+		</header>
+			<div class="list-group"> 
+				<div class="list-group-item"ng-repeat="product in store.products | orderBy: 'price'"> 
+					<!--directive that hides the html element based on any of the model's property we choose -->
+					<div ng-hide="product.soldOut"> 
 					<!--Currency filter used here, places the dollar sign and decimal points -->
-					<h2> {{product.price | currency}} </h2>
-					<p> {{product.description}} </p>
-					<img ng-src="{{product.images[0].full}}" />
-					<!--Directive to show or not button, based on any chosen model's property -->
-					<div class="purchaseButton">
-					<button ng-show="product.canPurchase"> Add to Cart </button>
-					</div>
-					
-					<!-- Deprecated: Following directive in section assign ids to tabs to be used later with bootstrap -->
-					<!-- @since v_1_1 separate the tabs logic on a controller to tidy up code, see app.js file, where controllers are declared -->
-					<section ng-init="tab = 1" ng-controller="PanelController as panel"> <!--  -->
-						<ul class="nav nav-pills">
-							<li ng-class="{active:panel.isSelected(1)}"> <!--Note the {} to evaluate the expression and link it to bootstrap active: -->
-								<a href ng-click="panel.selectTab(1)"> Description </a>  <!-- When clicked, assign the value 1 to this tab with the directive [to a property angular will use, see below] -->
-							</li>
-							<li ng-class="{active:panel.isSelected(2)}"> 
-								<a href ng-click="panel.selectTab(2)"> Specifications </a> 
-							</li>
-							<li ng-class="{active:panel.isSelected(3)}"> 
-								<a href ng-click="panel.selectTab(3)"> Reviews </a> 
-							</li>
-						</ul>
-						<!-- divs below hold the info from the model linked to the tabs above with their ids, to show them according to their ids: this is done through ng-show directive -->
-					<div class="panel" ng-show="panel.isSelected(1)">  
-						<p> {{product.description}}</p> 
-					</div>
-					<div class="panel" ng-show="panel.isSelected(2)">  
-						<p> None Yet </p> 
-					</div>
-					<div class="panel" ng-show="panel.isSelected(3)">  
-						<p> None Yet</p> 
-					</div>
-					</section>					
-				</div>		
+						<h3> {{product.name}} <em class="pull-center">{{product.price | currency}}</em> </h3>
+							<div class="img-wrap"> 
+								<ul class="img-thumbnails clearfix">
+									<li class="small-image pull-left thumbnail" ng-repeat="image in product.images">
+									  <img ng-src="{{product.images[0].full}}" />
+									</li>
+								 </ul>
+							</div>
+							<p> {{product.description}} </p>
+						<!--Directive to show or not button, based on any chosen model's property -->
+						<div class="purchaseButton">
+						<!-- Adding Bootstrap button style-->
+						<br><button ng-show="product.canPurchase" class="btn btn-info"> Add to Cart <br> </button>
+						</div>
+						
+						<!-- Deprecated: Following directive in section assign ids to tabs to be used later with bootstrap -->
+						<!-- @since v_1_1 separate the tabs logic on a controller to tidy up code, see app.js file, where controllers are declared -->
+						<section ng-init="tab = 1" ng-controller="PanelController as panel"> 
+								<br>
+								<ul class="nav nav-pills">
+									<li ng-class="{active:panel.isSelected(1)}"> <!--Note the {} to evaluate the expression and link it to bootstrap active: -->
+										<a href ng-click="panel.selectTab(1)"> Description </a>  <!-- When clicked, assign the value 1 to this tab with the directive [to a property angular will use, see below] -->
+									</li>
+									<li ng-class="{active:panel.isSelected(2)}"> 
+										<a href ng-click="panel.selectTab(2)"> Specifications </a> 
+									</li>
+									<li ng-class="{active:panel.isSelected(3)}"> 
+										<a href ng-click="panel.selectTab(3)"> Reviews </a> 
+									</li>
+								</ul>
+								<!-- divs below hold the info from the model linked to the tabs above with their ids, to show them according to their ids: this is done through ng-show directive
+								but tab value is set while dom element is clicked above in the li
+								-->
+							<div class="panel" ng-show="panel.isSelected(1)">  
+								<p> {{product.description}}</p> 
+							</div>
+							<div class="panel" ng-show="panel.isSelected(2)">  
+								<p> None Yet </p> 
+							</div>
+							<div class="panel" ng-show="panel.isSelected(3)">  
+								<ul>
+								  <h4>Reviews</h4>
+								  <li ng-repeat="review in product.reviews">
+									<blockquote>
+									  <strong>{{review.stars}} Stars</strong>
+									  {{review.body}}
+									  <cite class="clearfix">{{review.author}}</cite>
+									</blockquote>
+								  </li>
+								</ul>
+								<form name="reviewForm"> 
+								 <!--  Live Preview -->
+									<h4> Submit a new review </h4>
+										<blockquote>
+										<b>Stars: {{review.stars}} </b> <br>
+											{{review.body}} <br>
+										<cite> {{review.author}} </cite>
+										</blockquote>
+									<br>
+									<fieldset class="form-group">
+										<select ng-model="review.stars" class="form-control" ng-options="stars for stars in [5,4,3,2,1]"  title="Stars">
+											<option value="">Rate the Product</option>
+										</select>
+									</fieldset>
+									 <fieldset class="form-group">
+										<textarea ng-model="review.body" class="form-control" placeholder="Write a short review of the product..." title="Review"></textarea>
+									</fieldset>
+									<fieldset class="form-group">
+										<input ng-model="review.author" type="email" class="form-control" placeholder="jimmyDean@example.org" title="Email" />
+									</fieldset>
+									<fieldset class="form-group">
+										<input type="submit" class="btn btn-primary pull-right" value="Submit Review" />
+									</fieldset>
+								</form>
+							</div>
+						</section>					
+					</div>		
+				</div>
 			</div>
+			<!--Directive for looping in the model received from Controller-->
+
 		</div>
-		<script type="text/javascript" src="angular.min.js"> </script>
-		<!-- This is our module linked to the html -->
-		<script type="text/javascript" src="app.js"> </script>
 	</body>
 </html>
