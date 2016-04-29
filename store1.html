@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<!--angular module here attached to the html is named store in the js -->
+<html ng-app="store">
+	<head>
+		<link rel="stylesheet" type="text/css" href="bootstrap.min.css" />
+	</head>
+	<body>
+	<!--Controller here attached as well -->
+		<div ng-controller="StoreController as store">
+			<!--Directive for looping in the model received from Controller-->
+			<div ng-repeat="product in store.products | orderBy: 'price'">
+				<!--directive that hides the html element based on any of the model's property we choose -->
+				<div ng-hide="product.soldOut"> 
+					<h1> {{product.name}} </h1>
+					<!--Currency filter used here, places the dollar sign and decimal points -->
+					<h2> {{product.price | currency}} </h2>
+					<p> {{product.description}} </p>
+					<img ng-src="{{product.images[0].full}}" />
+					<!--Directive to show or not button, based on any chosen model's property -->
+					<div class="purchaseButton">
+					<button ng-show="product.canPurchase"> Add to Cart </button>
+					</div>
+					
+					<!-- Following directive in section assign ids to tabs to be used later with bootstrap -->
+					<section ng-init="tab = 1"> <!-- Set as initial tab the description one with this angular directive -->
+						<ul class="nav nav-pills">
+							<li ng-class="{active:tab === 1"}>  <!--Note the {} to evaluate the expression and link it to bootstrap active: -->
+								<a href ng-click="tab = 1"> Description </a>  <!-- When clicked, assign the value 1 to this tab with the directive [to a property angular will use, see below] -->
+							</li>
+							<li ng-class="{active:tab === 2}"> 
+								<a href ng-click="tab = 2"> Specifications </a> 
+							</li>
+							<li ng-class="{active:tab === 3}"> 
+								<a href ng-click="tab = 3"> Reviews </a> 
+							</li>
+						</ul>
+					<!-- divs below hold the info from the model linked to the tabs above with their ids, to show them according to their ids: this is done through ng-show directive -->
+					<div class="panel" ng-show="tab === 1">  
+						<p> {{product.description}}</p> 
+					</div>
+					<div class="panel" ng-show="tab === 2">  
+						<p> None Yet </p> 
+					</div>
+					<div class="panel" ng-show="tab === 3">  
+						<p> None Yet</p> 
+					</div>
+					</section>				
+				</div>		
+			</div>
+		</div>
+		<script type="text/javascript" src="angular.min.js"> </script>
+		<!-- This is our module linked to the html -->
+		<script type="text/javascript" src="app.js"> </script>
+	</body>
+</html>
