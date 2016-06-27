@@ -24,13 +24,25 @@
 		this.products = gems;
 	});
 	
+	//A controller for the form models submitted
+	app.controller('ReviewController', function() {
+		//create and initialise the object that will bind to the model, to be populated later in the html form object 
+		this.review = {};
+		
+		//Function adds a review to an existing product [linking behind the scenes by angular for the specific product?]
+		this.addReview = function(product) {
+			this.review.createdOn = Date.now();
+			product.reviews.push(this.review);
+			this.review = {}; //reset the review object to clear the form fields in the html after adding.
+		};
+	});
 	
 	//a var in our app, data,js object notation
 	var gems = [
 	{
 		name: 'Ruby',
 		price: 12.15,
-		description: 'Insert a description here',
+		description: 'Everybody knows what a ruby is.',
 		canPurchase: true,
 		//Here we put and array with [] but we just only using one object inside the array
 		images: [
@@ -45,7 +57,8 @@
 			{
 			stars: 5,
 			body: 'This product is great',
-			author: 'joe@thomas.com'				
+			author: 'joe@thomas.com',
+			createdOn: 1397490980837
 			}
 		]
 	}
@@ -53,7 +66,7 @@
 	{
 		name: 'Dodecahedron',
 		price: 2.95,
-		description: 'Insert a description here',
+		description: 'This Gem is geometrically complex and shiny',
 		canPurchase: true,
 		images: [
 			{
@@ -66,12 +79,14 @@
 		{
 			stars: 1,
 			body: 'This product sucks',
-			author: 'tim@hater.com'				
+			author: 'tim@hater.com',
+			createdOn: 1397490980837			
 		}, 
 		{
 			stars: 3,
 			body: 'This product is acceptable',
-			author: 'john@noone.com'				
+			author: 'john@noone.com',
+			createdOn: 1397490980837			
 		}
 		]
 	}

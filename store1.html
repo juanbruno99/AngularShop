@@ -3,6 +3,8 @@
 <html ng-app="store">
 	<head>
 		<link rel="stylesheet" type="text/css" href="bootstrap.min.css" />
+		<!-- @since v3: Addition of custom css style sheet, for validations around inputs, to be shown on the fly green or red. -->
+		<link rel="stylesheet" type="text/css" href="style.css" />
 		<script type="text/javascript" src="angular.min.js"> </script>
 		<!-- This is our module linked to the html -->
 		<script type="text/javascript" src="app.js"> </script>
@@ -27,7 +29,6 @@
 									</li>
 								 </ul>
 							</div>
-							<p> {{product.description}} </p>
 						<!--Directive to show or not button, based on any chosen model's property -->
 						<div class="purchaseButton">
 						<!-- Adding Bootstrap button style-->
@@ -65,29 +66,31 @@
 									<blockquote>
 									  <strong>{{review.stars}} Stars</strong>
 									  {{review.body}}
-									  <cite class="clearfix">{{review.author}}</cite>
+									  <cite class="clearfix">{{review.author}} on {{review.createdOn | date: "short"}}</cite>
 									</blockquote>
 								  </li>
 								</ul>
-								<form name="reviewForm"> 
+								<!-- Adding the linkage to the controller in the js, to tidy the code and follow pattern practices -->
+								<!--For the ng-submit check the dollar sign, a built in property from angular, allows to check for html dom objects property values-->
+								<form name="reviewForm" ng-controller="ReviewController as reviewCtrl" ng-submit="reviewForm.$valid && reviewCtrl.addReview(product)" novalidate> <!-- Pass back to the controller the modified product, through a function and to add a review -->
 								 <!--  Live Preview -->
 									<h4> Submit a new review </h4>
 										<blockquote>
-										<b>Stars: {{review.stars}} </b> <br>
-											{{review.body}} <br>
-										<cite> {{review.author}} </cite>
+										<b>Stars: {{reviewCtrl.review.stars}} </b> <br>
+											{{reviewCtrl.review.body}} <br>
+										<cite> {{reviewCtrl.review.author}} </cite>
 										</blockquote>
 									<br>
 									<fieldset class="form-group">
-										<select ng-model="review.stars" class="form-control" ng-options="stars for stars in [5,4,3,2,1]"  title="Stars">
+										<select ng-model="reviewCtrl.review.stars" class="form-control" ng-options="stars for stars in [5,4,3,2,1]"  title="Stars" required>
 											<option value="">Rate the Product</option>
 										</select>
 									</fieldset>
 									 <fieldset class="form-group">
-										<textarea ng-model="review.body" class="form-control" placeholder="Write a short review of the product..." title="Review"></textarea>
+										<textarea ng-model="reviewCtrl.review.body" class="form-control" placeholder="Write a short review of the product..." title="Review" required></textarea>
 									</fieldset>
 									<fieldset class="form-group">
-										<input ng-model="review.author" type="email" class="form-control" placeholder="jimmyDean@example.org" title="Email" />
+										<input ng-model="reviewCtrl.review.author" type="email" class="form-control" placeholder="jimmyDean@example.org" title="Email" required/>
 									</fieldset>
 									<fieldset class="form-group">
 										<input type="submit" class="btn btn-primary pull-right" value="Submit Review" />
