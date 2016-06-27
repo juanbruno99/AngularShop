@@ -3,6 +3,8 @@
 	//angular is divided in modules [that could match the htms but not necessarily]
 	var app= angular.module('store', [ ]); //second argument is array with dependencies list for our application, if we don't have any, still we need to send an empty array
 	
+	//**********CONTROLLERS*************
+	
 	//A controller that holds the tabs' panel logic, to organise the page better
 	app.controller('PanelController', function() {
 		//set the initial tab as 1 
@@ -37,7 +39,17 @@
 		};
 	});
 	
-	//a var in our app, data,js object notation
+	//**************DIRECTIVES*************
+	
+	//Product description element directive (descriptive), angular internal binding: slash in html, camelCase here
+	app.directive("productReview", function() {
+		return {
+		  restrict: 'E',
+		  templateUrl: 'product-review.html'
+		};
+	});
+	
+	//a var in our app, data,js object notation- JSON, will get from backend RESTful services later
 	var gems = [
 	{
 		name: 'Ruby',
@@ -48,7 +60,9 @@
 		images: [
 			{
 				//String property represents the path of the image in String
-				full: 'http://zohararad.github.io/presentations/falling-in-love-with-ruby/presentation/images/ruby.png'
+				full: 'Ruby_full.jpg'
+				//********Chrome does not allows to load images from local computer, needs webserver, so commenting this out and using firefox***********
+				//full: 'http://zohararad.github.io/presentations/falling-in-love-with-ruby/presentation/images/ruby.png'
 			}
 		], 
 		soldOut: false,
@@ -71,7 +85,8 @@
 		images: [
 			{
 				//String property represents the path of the image in String
-				full: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Dodecahedron.jpg/240px-Dodecahedron.jpg'
+				full: 'Dodecahedron.jpg'
+				//full: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Dodecahedron.jpg/240px-Dodecahedron.jpg'
 			}
 		], 
 		soldOut: false,

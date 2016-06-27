@@ -1,0 +1,9 @@
+<!-- Custom directive for the product description html block -->
+<!-- This element expects a review model object to the controller to be propertly loaded from the main html. -->
+ <li ng-repeat="review in product.reviews">
+<blockquote>
+	<strong>{{review.stars}} Stars</strong>
+	{{review.body}}
+	<cite class="clearfix">{{review.author}} on {{review.createdOn | date: "short"}}</cite>
+</blockquote>
+ </li>

@@ -5,6 +5,7 @@
 		<link rel="stylesheet" type="text/css" href="bootstrap.min.css" />
 		<!-- @since v3: Addition of custom css style sheet, for validations around inputs, to be shown on the fly green or red. -->
 		<link rel="stylesheet" type="text/css" href="style.css" />
+		
 		<script type="text/javascript" src="angular.min.js"> </script>
 		<!-- This is our module linked to the html -->
 		<script type="text/javascript" src="app.js"> </script>
@@ -17,13 +18,15 @@
 		  <h2 class="text-center">store</h2>
 		</header>
 			<div class="list-group"> 
-				<div class="list-group-item"ng-repeat="product in store.products | orderBy: 'price'"> 
-					<!--directive that hides the html element based on any of the model's property we choose -->
+				<!-- directive for looping through the products -->
+				<div class="list-group-item" ng-repeat="product in store.products | orderBy: 'price'"> 
+					<!--directive that hides the html element based on any of the model's property/attribute we choose -->
 					<div ng-hide="product.soldOut"> 
 					<!--Currency filter used here, places the dollar sign and decimal points -->
 						<h3> {{product.name}} <em class="pull-center">{{product.price | currency}}</em> </h3>
 							<div class="img-wrap"> 
 								<ul class="img-thumbnails clearfix">
+								<!-- Products can have more than one img so loop through them with ng-repeat again -->
 									<li class="small-image pull-left thumbnail" ng-repeat="image in product.images">
 									  <img ng-src="{{product.images[0].full}}" />
 									</li>
@@ -31,7 +34,7 @@
 							</div>
 						<!--Directive to show or not button, based on any chosen model's property -->
 						<div class="purchaseButton">
-						<!-- Adding Bootstrap button style-->
+						<!-- Adding Bootstrap button style, also use ng-show linked to object attribute to show or not depending on value -->
 						<br><button ng-show="product.canPurchase" class="btn btn-info"> Add to Cart <br> </button>
 						</div>
 						
@@ -57,23 +60,18 @@
 								<p> {{product.description}}</p> 
 							</div>
 							<div class="panel" ng-show="panel.isSelected(2)">  
-								<p> None Yet </p> 
+								<p product-specs/> <!-- here this block is replaced by a custom directive (attribute type) --> 
 							</div>
 							<div class="panel" ng-show="panel.isSelected(3)">  
 								<ul>
 								  <h4>Reviews</h4>
-								  <li ng-repeat="review in product.reviews">
-									<blockquote>
-									  <strong>{{review.stars}} Stars</strong>
-									  {{review.body}}
-									  <cite class="clearfix">{{review.author}} on {{review.createdOn | date: "short"}}</cite>
-									</blockquote>
-								  </li>
+								  <!-- @since v_1_3: Replacing this block of code to declutter html index code, by using custom element directive -->
+								  <product-review></product-review>
 								</ul>
-								<!-- Adding the linkage to the controller in the js, to tidy the code and follow pattern practices -->
-								<!--For the ng-submit check the dollar sign, a built in property from angular, allows to check for html dom objects property values-->
+								<!-- Form Handling: Adding the linkage to the controller in the js, to tidy the code and follow pattern practices -->
+								<!--For the ng-submit check the dollar sign, a built in property from angular, allows to check for html dom objects property values, this relies on objects with the valid tag property-->
 								<form name="reviewForm" ng-controller="ReviewController as reviewCtrl" ng-submit="reviewForm.$valid && reviewCtrl.addReview(product)" novalidate> <!-- Pass back to the controller the modified product, through a function and to add a review -->
-								 <!--  Live Preview -->
+								 <!--  Live Preview through two way binding in angular -->
 									<h4> Submit a new review </h4>
 										<blockquote>
 										<b>Stars: {{reviewCtrl.review.stars}} </b> <br>
@@ -81,6 +79,7 @@
 										<cite> {{reviewCtrl.review.author}} </cite>
 										</blockquote>
 									<br>
+									<!-- ng-model binds the dom object values to the model we are passing to the angular controller -->
 									<fieldset class="form-group">
 										<select ng-model="reviewCtrl.review.stars" class="form-control" ng-options="stars for stars in [5,4,3,2,1]"  title="Stars" required>
 											<option value="">Rate the Product</option>
@@ -101,8 +100,6 @@
 					</div>		
 				</div>
 			</div>
-			<!--Directive for looping in the model received from Controller-->
-
 		</div>
 	</body>
 </html>
